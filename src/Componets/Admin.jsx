@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Paper,
@@ -44,7 +44,15 @@ const Admin = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State variable to track authentication status
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check if user is already logged in from local storage
+    const loggedInStatus = localStorage.getItem("isLoggedIn");
+    if (loggedInStatus === "true") {
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   const paperStyle = {
     padding: 20,
@@ -63,17 +71,23 @@ const Admin = () => {
 
   const handleSubmit = () => {
     if (username === "root" && password === "root") {
-      setIsLoggedIn(true); // Set isLoggedIn to true if authentication succeeds
+      setIsLoggedIn(true);
+      localStorage.setItem("isLoggedIn", "true"); // Store login status in local storage
     } else {
       toast.error("Invalid username or password");
     }
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    localStorage.setItem("isLoggedIn", "false"); // Update local storage on logout
   };
 
   const currentTheme = isDarkMode ? darkTheme : lightTheme;
 
   return (
     <>
-      <ToastContainer /> {/* Toast container for displaying notifications */}
+      <ToastContainer />
       {!isLoggedIn ? (
         <div className="h-screen w-full bg-slate-600">
           <ThemeProvider theme={currentTheme}>
@@ -134,7 +148,12 @@ const Admin = () => {
           </ThemeProvider>
         </div>
       ) : (
-        <Monu />
+        <>
+          <Monu />
+          <Button color="primary" onClick={handleLogout}>
+            Logout
+          </Button>
+        </>
       )}
     </>
   );
