@@ -19,10 +19,15 @@ import {
 function QuestionList() {
   const { data, isLoading, isError } = useGetAllQuestionQuery();
   const [selectedOptions, setSelectedOptions] = useState({});
+  const [result, setResult] = useState(""); // State to store the final result
   const [showResults, setShowResults] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [submitDisabled, setSubmitDisabled] = useState(false); // State to manage submit button disabled status
+  console.log("here result", result);
 
   const handleOptionChange = (questionId, option) => {
+    // Check if submitting is disabled, then return
+    if (submitDisabled) return;
     setSelectedOptions({ ...selectedOptions, [questionId]: option });
   };
 
@@ -35,20 +40,20 @@ function QuestionList() {
   };
 
   const handleConfirmSubmit = () => {
-    setShowResults(true);
-    setOpenDialog(false);
-  };
-
-  const calculateResult = () => {
+    // Calculate the result
     let correctCount = 0;
     data.forEach((question) => {
       if (selectedOptions[question._id] === question.correctAnswer) {
         correctCount++;
       }
     });
-    return correctCount;
+    setResult(correctCount.toString());
+    setShowResults(true);
+    setOpenDialog(false);
+    setSubmitDisabled(true);
   };
 
+  console.log("the final values of result" + result);
   const theme = createTheme({
     palette: {
       primary: {
@@ -92,7 +97,7 @@ function QuestionList() {
                         <FormControlLabel
                           key={optionIndex}
                           value={option}
-                          control={<Radio />}
+                          control={<Radio disabled={submitDisabled} />} // Disable radio if submitting is disabled
                           label={option}
                           className="mb-2"
                         />
@@ -106,12 +111,13 @@ function QuestionList() {
               onClick={handleResultSubmit}
               className="mt-4"
               color="primary"
+              disabled={submitDisabled} // Disable submit button if already submitted
             >
               Submit
             </Button>
             {showResults && (
               <Typography variant="h6" className="mt-4">
-                Correct Answers: {calculateResult()} / {data.length}
+                Correct Answers: {result} / {data.length}
               </Typography>
             )}
             <Dialog open={openDialog} onClose={handleCloseDialog}>

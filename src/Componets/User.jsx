@@ -130,7 +130,7 @@ function User() {
           md={7}
           sx={{
             backgroundImage:
-              "url(https://media.istockphoto.com/id/1297580844/photo/medical-students-writing-examination-paper.webp?s=1024x1024&w=is&k=20&c=zebyqKqExOg-2KpLE5DNCW6bDcBMIWnGzssYLeW8U_8=)",
+              "url(https://www.thestatesman.com/wp-content/uploads/2018/01/kid.jpg)",
             backgroundRepeat: "no-repeat",
             backgroundColor: (t) =>
               t.palette.mode === "light"

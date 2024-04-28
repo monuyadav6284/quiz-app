@@ -9,6 +9,7 @@ import {
   FormControlLabel,
   Checkbox,
   IconButton,
+  Stack,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -150,9 +151,11 @@ const Admin = () => {
       ) : (
         <>
           <Monu />
-          <Button color="primary" onClick={handleLogout}>
-            Logout
-          </Button>
+          <div style={{ position: "fixed", top: 10, right: 10 }}>
+            <Button variant="contained" onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
         </>
       )}
     </>

@@ -50,6 +50,13 @@ function Monu() {
   };
 
   const handleAddQuestion = async () => {
+    // Check if any field is empty
+    if (!question || options.some((option) => !option) || !correctAnswer) {
+      toast.error("All fields are required!");
+      return;
+    }
+
+    // Check if correct answer is one of the options
     if (!options.includes(correctAnswer)) {
       toast.error("Invalid correct answer!");
       return;
