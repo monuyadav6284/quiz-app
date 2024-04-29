@@ -13,14 +13,14 @@ import {
   ThemeProvider,
 } from "@mui/material";
 import "../App.css";
-import { useGetAllPostQuery } from "../service/post";
+import { useGetAllResultsQuery } from "../service/result";
 import {
   Brightness2 as MoonIcon,
   WbSunny as SunIcon,
 } from "@mui/icons-material";
 
 function UserList() {
-  const { data: posts, error, isLoading } = useGetAllPostQuery();
+  const { data: results, error, isLoading } = useGetAllResultsQuery();
   const [darkMode, setDarkMode] = React.useState(false);
 
   const toggleTheme = () => {
@@ -45,7 +45,6 @@ function UserList() {
     return <div>Error: {error.message}</div>;
   }
 
-  // Variable to keep track of serial number
   let serialNumber = 1;
 
   return (
@@ -66,21 +65,19 @@ function UserList() {
             <TableHead>
               <TableRow>
                 <TableCell>Serial Number</TableCell>{" "}
-                {/* Display Serial Number heading */}
                 <TableCell>Full Name</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Result</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {posts &&
-                posts.map((post) => (
-                  <TableRow key={post.id}>
+              {results &&
+                results.map((result) => (
+                  <TableRow key={result.id}>
                     <TableCell>{serialNumber++}</TableCell>{" "}
-                    {/* Display Serial Number */}
-                    <TableCell>{post.fullname}</TableCell>
-                    <TableCell>{post.email}</TableCell>
-                    <TableCell>{post.result}</TableCell>
+                    <TableCell>{result.userId.fullname}</TableCell>
+                    <TableCell>{result.userId.email}</TableCell>
+                    <TableCell>{result.result}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>

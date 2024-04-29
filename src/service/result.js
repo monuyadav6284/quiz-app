@@ -16,7 +16,10 @@ export const resultApi = createApi({
         body: newPost,
       }),
     }),
+    getAllResults: builder.query({
+      query: () => "/getall",
+    }),
   }),
 });
 
-export const { useCreateResultMutation } = resultApi;
+export const { useCreateResultMutation, useGetAllResultsQuery } = resultApi;

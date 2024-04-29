@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -20,13 +20,13 @@ import { useCreatePostMutation } from "../service/post";
 import QuestionList from "../Componets/QuestionList";
 
 function User() {
-  const [darkMode, setDarkMode] = React.useState(false);
-  const [formData, setFormData] = React.useState({
+  const [darkMode, setDarkMode] = useState(false);
+  const [formData, setFormData] = useState({
     fullname: "",
     email: "",
     password: "",
   });
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const toggleTheme = () => {
     setDarkMode((prevMode) => !prevMode);
@@ -40,63 +40,47 @@ function User() {
     }));
   };
 
-  // Initialize the mutation hook
   const [mutate] = useCreatePostMutation();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      // Validate form data
-      if (!validateFormData()) {
-        return;
-      }
 
-      // Send form data to the server
-      await mutate(formData);
-      // Display success message
+    // Form validation
+    if (formData.fullname.length < 3) {
+      toast.error("Fullname must be at least 3 characters long.");
+      return;
+    }
+
+    if (!isValidEmail(formData.email)) {
+      toast.error("Invalid email address.");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters long.");
+      return;
+    }
+
+    try {
+      const response = await mutate(formData);
       toast.success("Registration successful!");
-      // Clear input fields
       setFormData({
         fullname: "",
         email: "",
         password: "",
       });
-      // Set authentication status to true
       setIsAuthenticated(true);
     } catch (error) {
-      // Display error message
       toast.error("Failed to register. Please try again later.");
       console.error("Error:", error);
     }
   };
 
-  const validateFormData = () => {
-    const { fullname, email, password } = formData;
-
-    // Validate fullname
-    if (fullname.length < 4) {
-      toast.error("Fullname must be at least 4 characters long.");
-      return false;
-    }
-
-    // Validate email
+  // Function to validate email format
+  const isValidEmail = (email) => {
+    // Regular expression for validating email address
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      toast.error("Invalid email address.");
-      return false;
-    }
-
-    // Validate password
-    const passwordRegex =
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{6,}$/;
-    if (!passwordRegex.test(password)) {
-      toast.error(
-        "Password must be at least 6 characters long and contain at least one digit, one lowercase letter, one uppercase letter, and one special character."
-      );
-      return false;
-    }
-
-    return true;
+    return emailRegex.test(email);
   };
 
   const lightTheme = createTheme();
@@ -173,14 +157,6 @@ function User() {
                 autoComplete="fullname"
                 value={formData.fullname}
                 onChange={handleChange}
-                error={
-                  formData.fullname.length > 0 && formData.fullname.length < 4
-                }
-                helperText={
-                  formData.fullname.length > 0 && formData.fullname.length < 4
-                    ? "Fullname must be at least 4 characters long."
-                    : ""
-                }
               />
               <TextField
                 margin="normal"
@@ -192,20 +168,6 @@ function User() {
                 autoComplete="email"
                 value={formData.email}
                 onChange={handleChange}
-                error={
-                  formData.email.length > 0 &&
-                  !/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(
-                    formData.email
-                  )
-                }
-                helperText={
-                  formData.email.length > 0 &&
-                  !/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(
-                    formData.email
-                  )
-                    ? "Invalid email address."
-                    : ""
-                }
               />
               <TextField
                 margin="normal"
@@ -218,20 +180,6 @@ function User() {
                 autoComplete="current-password"
                 value={formData.password}
                 onChange={handleChange}
-                error={
-                  formData.password.length > 0 &&
-                  !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{6,}$/.test(
-                    formData.password
-                  )
-                }
-                helperText={
-                  formData.password.length > 0 &&
-                  !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{6,}$/.test(
-                    formData.password
-                  )
-                    ? "Password must be at least 6 characters long and contain at least one digit, one lowercase letter, one uppercase letter, and one special character."
-                    : ""
-                }
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}

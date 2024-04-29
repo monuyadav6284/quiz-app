@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { store } from "./app/store";
 import { Provider } from "react-redux";
@@ -18,6 +17,7 @@ ReactDOM.render(
         <Routes>
           <Route path="/" element={<User />} />
           <Route path="admin" element={<Admin />} />
+          <Route path="admin/userlist" element={<UserList />} />
         </Routes>
       </Router>
     </Provider>
